@@ -60,30 +60,32 @@ jobs:
           echo "No app.py found, skipping endpoint test"
         fi
 
-  deploy:
-    name: Deploy to Heroku
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-    
-    - name: Install Heroku CLI
-      run: |
-        curl https://cli-assets.heroku.com/install.sh | sh
-    
-    - name: Deploy to Heroku
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-      run: |
-        heroku --version
-        heroku container:login
-        heroku container:push web --app $HEROKU_APP_NAME
-        heroku container:release web --app $HEROKU_APP_NAME
+  # Deployment job is currently disabled
+  # Uncomment and configure the following when ready to deploy to Heroku
+  # deploy:
+  #   name: Deploy to Heroku
+  #   needs: test
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   runs-on: ubuntu-latest
+  #   
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   
+  #   - name: Set up Python 3.9
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.9'
+  #   
+  #   - name: Install Heroku CLI
+  #     run: |
+  #       curl https://cli-assets.heroku.com/install.sh | sh
+  #   
+  #   - name: Deploy to Heroku
+  #     env:
+  #       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  #       HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+  #     run: |
+  #       heroku --version
+  #       heroku container:login
+  #       heroku container:push web --app $HEROKU_APP_NAME
+  #       heroku container:release web --app $HEROKU_APP_NAME
