@@ -110,9 +110,10 @@ FLASK_ENV=development
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## 👨‍💻 Authors
 
-[Parthiv](https://github.com/Parthiv19M)
+- [Parthiv Meduri](https://github.com/Parthiv19M)
+- [KL Saketh](https://github.com/klsaketh7-psl)
 
 2. **Set up a virtual environment**
    ```bash
@@ -198,6 +199,7 @@ The application is automatically deployed to Heroku when changes are pushed to t
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## 👨‍💻 Authors
 
-[Parthiv](https://github.com/Parthiv19M)
+- [Parthiv Meduri](https://github.com/Parthiv19M)
+- [KL Saketh](https://github.com/klsaketh7-psl)
