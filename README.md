@@ -51,7 +51,7 @@ A modern Python Flask application demonstrating industry-standard CI/CD practice
    ```bash
    python app.py
    ```
-   Visit http://localhost:5001 in your browser
+   Visit http://localhost:8000/ in your browser
 
 ## 🧪 Running Tests
 
