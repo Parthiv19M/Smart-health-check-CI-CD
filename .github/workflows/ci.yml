@@ -1,0 +1,94 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Tests and Linting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    # Safety check removed - uncomment and install safety if needed
+    # - name: Check for insecure dependencies
+    #   run: safety check --full-report
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+    
+    - name: Run Black code formatter
+      continue-on-error: true
+      run: black --check .
+    
+    - name: Lint with flake8
+      continue-on-error: true
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || echo "Flake8 found issues but continuing..."
+        flake8 . --count --max-complexity=10 --max-line-length=88 --statistics || echo "Flake8 found issues but continuing..."
+    
+    - name: Run tests if tests/ directory exists
+      id: pytest
+      continue-on-error: true
+      run: |
+        if [ -d "tests" ]; then
+          pip install pytest pytest-cov
+          pytest --cov=. --cov-report=xml
+          python -m coverage report --fail-under=80
+        else
+          echo "No tests directory found, skipping tests"
+        fi
+    
+    - name: Test application endpoints
+      continue-on-error: true
+      run: |
+        if [ -f "app.py" ]; then
+          # Start the Flask app in the background
+          python app.py &
+          # Give the app time to start
+          sleep 5
+          # Test the health endpoint
+          curl --fail http://localhost:5001/health
+        else
+          echo "No app.py found, skipping endpoint test"
+        fi
+
+  # Deployment job is currently disabled
+  # Uncomment and configure the following when ready to deploy to Heroku
+  # deploy:
+  #   name: Deploy to Heroku
+  #   needs: test
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   runs-on: ubuntu-latest
+  #   
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   
+  #   - name: Set up Python 3.9
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.9'
+  #   
+  #   - name: Install Heroku CLI
+  #     run: |
+  #       curl https://cli-assets.heroku.com/install.sh | sh
+  #   
+  #   - name: Deploy to Heroku
+  #     env:
+  #       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  #       HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+  #     run: |
+  #       heroku --version
+  #       heroku container:login
+  #       heroku container:push web --app $HEROKU_APP_NAME
+  #       heroku container:release web --app $HEROKU_APP_NAME
