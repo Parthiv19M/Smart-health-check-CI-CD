@@ -13,3 +13,4 @@ node_modules/
 workspace-spring-tool-suite/
 VirtualBox/
 parthiv logo.png
+.env

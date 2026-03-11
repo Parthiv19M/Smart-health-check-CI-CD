@@ -2,6 +2,7 @@
 import os
 
 from flask import Flask, jsonify, send_from_directory
+from flask_cors import CORS
 
 
 def create_app(test_config=None):
@@ -14,6 +15,7 @@ def create_app(test_config=None):
         Flask: Configured Flask application instance.
     """
     app = Flask(__name__, static_folder="static")
+    CORS(app)  # Enable CORS for all routes
 
     if test_config is not None:
         app.config.update(test_config)

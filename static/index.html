@@ -747,11 +747,15 @@
             </a>
             <a href="#pipeline" class="btn btn-outline">View Pipeline</a>
           </div>
-          <div style="margin-top: 2rem">
+          <div style="margin-top: 2rem; display: flex; align-items: center; justify-content: center; gap: 1rem;">
             <img
               src="https://github.com/Parthiv19M/Smart-health-check-CI-CD/actions/workflows/ci.yml/badge.svg"
               alt="GitHub Actions Status"
             />
+            <div id="health-check" class="badge" style="margin-bottom: 0; display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0, 0, 0, 0.3);">
+              <span id="health-dot" style="width: 10px; height: 10px; background: #94a3b8; border-radius: 50%; display: inline-block;"></span>
+              <span id="health-text">API: Checking...</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1147,6 +1151,35 @@
             this.style.transform = "translateY(0)";
           });
         });
+
+      // Production API Health Check
+      const API_URL = "https://smart-health-check-api.onrender.com"; // User to update this after Render deployment
+
+      async function checkHealth() {
+        const dot = document.getElementById("health-dot");
+        const text = document.getElementById("health-text");
+
+        try {
+          const response = await fetch(`${API_URL}/health`);
+          const data = await response.json();
+
+          if (data.status === "ok") {
+            dot.style.background = "#22c55e"; // Green
+            text.innerText = "API: Online";
+          } else {
+            throw new Error("API Offline");
+          }
+        } catch (error) {
+          dot.style.background = "#ef4444"; // Red
+          text.innerText = "API: Offline";
+          console.error("Health check failed:", error);
+        }
+      }
+
+      // Check on load
+      checkHealth();
+      // Poll every 30 seconds
+      setInterval(checkHealth, 30000);
     </script>
   </body>
 </html>
