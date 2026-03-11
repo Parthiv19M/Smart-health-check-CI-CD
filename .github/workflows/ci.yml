@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
-    
+
     # Safety check removed - uncomment and install safety if needed
     # - name: Check for insecure dependencies
     #   run: safety check --full-report
@@ -26,17 +26,17 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-    
+
     - name: Run Black code formatter
       continue-on-error: true
       run: black --check .
-    
+
     - name: Lint with flake8
       continue-on-error: true
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || echo "Flake8 found issues but continuing..."
         flake8 . --count --max-complexity=10 --max-line-length=88 --statistics || echo "Flake8 found issues but continuing..."
-    
+
     - name: Run tests if tests/ directory exists
       id: pytest
       continue-on-error: true
@@ -48,7 +48,7 @@ jobs:
         else
           echo "No tests directory found, skipping tests"
         fi
-    
+
     - name: Test application endpoints
       continue-on-error: true
       run: |
@@ -70,19 +70,19 @@ jobs:
   #   needs: test
   #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
   #   runs-on: ubuntu-latest
-  #   
+  #
   #   steps:
   #   - uses: actions/checkout@v4
-  #   
+  #
   #   - name: Set up Python 3.9
   #     uses: actions/setup-python@v4
   #     with:
   #       python-version: '3.9'
-  #   
+  #
   #   - name: Install Heroku CLI
   #     run: |
   #       curl https://cli-assets.heroku.com/install.sh | sh
-  #   
+  #
   #   - name: Deploy to Heroku
   #     env:
   #       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
