@@ -6,29 +6,48 @@
 
 A modern Python Flask application demonstrating industry-standard CI/CD practices with GitHub Actions, automated testing, and a decoupled production architecture.
 
-## 🏗️ Production Architecture
+---
 
-This project is designed for a modern DevOps workflow where the frontend and backend are decoupled:
+## 🌐 Live Demo
 
-- **Frontend**: Hosted on **Vercel** (Static Site).
-- **Backend API**: Hosted on **Render** (Python/Flask Web Service).
-- **CI/CD**: Fully automated via **GitHub Actions**.
+| Component | URL |
+|-----------|-----|
+| **Frontend (Vercel)** | [https://smart-health-check-ci-cd.vercel.app](https://smart-health-check-ci-cd.vercel.app) |
+| **Backend API (Render)** | [https://smart-health-check-ci-cd.onrender.com](https://smart-health-check-ci-cd.onrender.com) |
+| **Health Check Endpoint** | [https://smart-health-check-ci-cd.onrender.com/health](https://smart-health-check-ci-cd.onrender.com/health) |
+
+---
+
+## 🏗️ Architecture
+
+This project demonstrates a modern DevOps deployment architecture:
+
+- **Frontend**: Hosted on **Vercel** for fast, global static delivery.
+- **Backend API**: Hosted on **Render** using Flask and Gunicorn.
+- **CI/CD**: **GitHub Actions** runs automated testing, linting, and build verification on every push and PR.
 
 ### Architecture Diagram
+
+```
+User
+ ↓
+Vercel (Frontend UI)
+ ↓  API request (/health)
+Render (Flask API)
+ ↓
+GitHub (CI/CD Pipeline)
+```
+
 ```mermaid
 graph TD
     User((User)) -->|HTTPS| Vercel[Vercel: Frontend]
     Vercel -->|API Fetch: /health| Render[Render: Flask Backend]
-    Render -->|Response| Vercel
-    GitHub[GitHub Repo] -->|Push/PR| GHA[GitHub Actions]
-    GHA -->|Audit & Test| GHA
-    GHA -->|Deploy Static| Vercel
-    GHA -->|Deploy API| Render
+    Render -->|JSON Response| Vercel
+    GitHub[GitHub Repo] -->|Push / PR| GHA[GitHub Actions]
+    GHA -->|Test & Lint| GHA
+    GHA -->|Auto Deploy| Vercel
+    GHA -->|Auto Deploy| Render
 ```
-
-## 🌐 Live URLs
-- **Frontend (Vercel)**: [https://smart-health-check-ci-cd.vercel.app](https://smart-health-check-ci-cd.vercel.app)
-- **Backend API (Render)**: [https://smart-health-check-api.onrender.com/health](https://smart-health-check-api.onrender.com/health)
 
 ---
 
@@ -37,8 +56,8 @@ graph TD
 - **Automated Testing**: Robust test suite with Pytest and Coverage.
 - **Code Quality**: Pre-commit hooks for Black, Flake8, and isort.
 - **Security**: Vulnerability scanning with Bandit and Safety.
-- **CORS Enabled**: Backend is configured to support cross-domain requests.
-- **Micro-Frontend Ready**: Static UI calls the API asynchronously.
+- **CORS Enabled**: Backend supports cross-domain requests from Vercel.
+- **Live Health Badge**: Frontend shows real-time API status with a clickable badge.
 
 ---
 
@@ -92,6 +111,15 @@ pre-commit run --all-files
    - **Framework Preset**: `Other`
    - **Output Directory**: `static`
 4. Vercel automatically detects the `vercel.json` and serves the static files.
+
+---
+
+## 📝 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Serves the frontend UI |
+| `GET` | `/health` | Returns `{"status": "ok"}` |
 
 ---
 
